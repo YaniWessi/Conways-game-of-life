@@ -18,18 +18,23 @@ const operations = [
   [-1, 0]
 ];
 
+// this generates an empty grid
+const produceEmptyGrid = () => {
+  // this creates the grid / initailizing the state in the use state
+  const rows = [];
+  // iterate to create rows and colums
+  for (let i = 0; i < numRows; i++) {
+    rows.push(Array.from(Array(numCols), () => 0));
+  }
+
+  return rows;
+};
+
 function App() {
   // the values are constently changing so we use the state so the grid state is going to be stores in a state hook.
 
   const [grid, setGrid] = useState(() => {
-    // this creates the grid / initailizing the state in the use state
-    const rows = [];
-    // iterate to create rows and colums
-    for (let i = 0; i < numRows; i++) {
-      rows.push(Array.from(Array(numCols), () => 0));
-    }
-
-    return rows;
+    return produceEmptyGrid();
   });
 
   //store whether we have started or not in state
@@ -98,7 +103,7 @@ function App() {
     // Any live cell eith more than three live neighbours dies, as if by overpopulation.
     // Any dead cell with eactly three live neighbours becomes a live cell, as if by reproduction:
 
-    setTimeout(runSimulation, 1000);
+    setTimeout(runSimulation, 100);
   }, []); //<--- this will make sure that this function is only created once
 
   // displaying the grid
@@ -116,6 +121,15 @@ function App() {
       >
         {running ? "stop" : "start"}
       </button>
+
+      <button
+        onClick={() => {
+          setGrid(produceEmptyGrid());
+        }}
+      >
+        Clear
+      </button>
+
       <div
         style={{
           // this displays the grid
