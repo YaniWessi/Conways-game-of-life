@@ -40,6 +40,10 @@ function App() {
   //store whether we have started or not in state. if it running display the value stop otherwise stop
   const [running, setRunning] = useState(false);
 
+  const [counter, setCounter] = useState(0);
+
+  const [speed, setSpeed] = useState(100);
+
   // to run the simulation we will have a function here called run simulate
   // i dont want it to recreate every render so i will use the react use callBack hook
   // this is like a recursice function
@@ -106,6 +110,7 @@ function App() {
     // Any dead cell with eactly three live neighbours becomes a live cell, as if by reproduction:
 
     setTimeout(runSimulation, 100);
+    setCounter(counter => (counter += 1));
   }, []); //[] <--- this will make sure that this function is only created once
 
   // displaying the grid
@@ -130,7 +135,7 @@ function App() {
           // iterate to create rows and colums
           for (let i = 0; i < numRows; i++) {
             rows.push(
-              Array.from(Array(numCols), () => (Math.random() > 0.5 ? 1 : 0))
+              Array.from(Array(numCols), () => (Math.random() > 0.1 ? 1 : 0))
             );
           }
 
@@ -139,9 +144,18 @@ function App() {
       >
         random
       </button>
+      <div>{speed}</div>
+      <button
+        onClick={() => {
+          setCounter(counter + 1);
+        }}
+      >
+        Counter{counter}
+      </button>
       <button
         onClick={() => {
           setGrid(produceEmptyGrid());
+          setCounter(0);
         }}
       >
         Clear
