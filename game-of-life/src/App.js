@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useRef } from "react";
 import produce from "immer";
+import About from "./About";
 
 const numRows = 50;
 const numCols = 50;
 
 // computing the grid of neibors using an arry of opperations
-// each location of the value is represented by th operation
+// each location of the value is represented by the operation
 
 const operations = [
   [0, 1],
@@ -29,15 +30,14 @@ const produceEmptyGrid = () => {
 
   return rows;
 };
+//^^^^^^^creates the grid. The values are constenly changing. (so thetate is stored in a usestate hook) grid
 
 function App() {
-  // the values are constently changing so we use the state so the grid state is going to be stores in a state hook.
-
   const [grid, setGrid] = useState(() => {
     return produceEmptyGrid();
   });
 
-  //store whether we have started or not in state
+  //store whether we have started or not in state. if it running display the value stop otherwise stop
   const [running, setRunning] = useState(false);
 
   // to run the simulation we will have a function here called run simulate
@@ -52,6 +52,8 @@ function App() {
 
   const runSimulation = useCallback(() => {
     if (!runningRef.current) {
+      // simulate and see if its currenly running. if not running return
+      // the useCallback hook so the fuction those not change-basically to not recreate every render
       // the running value in the state changes but our fuction those not change
       // so its not going to keep up to date with the value of what keepinf running is
       // we are actually going to store it in a ref, using the ref hook
@@ -104,12 +106,13 @@ function App() {
     // Any dead cell with eactly three live neighbours becomes a live cell, as if by reproduction:
 
     setTimeout(runSimulation, 100);
-  }, []); //<--- this will make sure that this function is only created once
+  }, []); //[] <--- this will make sure that this function is only created once
 
   // displaying the grid
 
   return (
     <>
+      <About />
       <button
         onClick={() => {
           setRunning(!running);
@@ -121,7 +124,21 @@ function App() {
       >
         {running ? "stop" : "start"}
       </button>
+      <button
+        onClick={() => {
+          const rows = [];
+          // iterate to create rows and colums
+          for (let i = 0; i < numRows; i++) {
+            rows.push(
+              Array.from(Array(numCols), () => (Math.random() > 0.5 ? 1 : 0))
+            );
+          }
 
+          setGrid(rows);
+        }}
+      >
+        random
+      </button>
       <button
         onClick={() => {
           setGrid(produceEmptyGrid());
@@ -139,6 +156,7 @@ function App() {
         }}
       >
         {grid.map((rows, i) =>
+          //row i column index j
           rows.map((col, j) => (
             <div
               key={`${i}-${j}`}
@@ -153,6 +171,7 @@ function App() {
                   //make it toggle back and forth position [i][k] ?  if currently alive make it dead=0 or alive=1
                   // now we can set an initial state for our grid to actually start simuliting this
                   gridCopy[i][j] = grid[i][j] ? 0 : 1;
+                  //toggle if currently alive make it dead. 0 --> 1
                 });
                 setGrid(newGrid);
               }}
