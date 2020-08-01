@@ -147,6 +147,13 @@ function App() {
       <div>{speed}</div>
       <button
         onClick={() => {
+          setSpeed(speed + 10);
+        }}
+      >
+        speed
+      </button>
+      <button
+        onClick={() => {
           setCounter(counter + 1);
         }}
       >
