@@ -11,7 +11,7 @@ const numCols = 50;
 const operations = [
   [0, 1],
   [0, -1],
-  [1 - 1],
+  [1, -1],
   [-1, 1],
   [1, 1],
   [-1, -1],
@@ -81,25 +81,26 @@ function App() {
       return produce(g, gridCopy => {
         for (let i = 0; i < numRows; i++) {
           //the double for loop with go through every cell in the grid
-          for (let j = 0; j < numCols; j++) {
+          for (let k = 0; k < numCols; k++) {
             // this is another place where we will update values in the grid and we want to mutate them const; newGrid
             // compute the number of neibors the cell has and determine what to do to it
             let neighbors = 0; //this is going to tell us for a given cell how many neibors it has
             operations.forEach(([x, y]) => {
               const newI = i + x;
-              const newJ = j + y;
+              const newK = k + y;
               // check the bound so we don't go above or below what we can
-              if (newI >= 0 && newI < numRows && newJ >= 0 && newJ < numCols) {
-                neighbors += g[newI][newJ];
+              if (newI >= 0 && newI < numRows && newK >= 0 && newK < numCols) {
+                neighbors += g[newI][newK];
               }
             });
+
             // rules covered by this
             // ( rule 1-->Any live cell with fewer than two live neighbours dies, as if by underpopulation)
             // ( rule 2-->Any live cell eith more than three live neighbours dies, as if by overpopulation)
             if (neighbors < 2 || neighbors > 3) {
-              gridCopy[i][j] = 0;
-            } else if (g[i][j] === 0 && neighbors === 3) {
-              gridCopy[i][j] = 1;
+              gridCopy[i][k] = 0;
+            } else if (g[i][k] === 0 && neighbors === 3) {
+              gridCopy[i][k] = 1;
             }
           }
         }
@@ -109,7 +110,7 @@ function App() {
     // Any live cell eith more than three live neighbours dies, as if by overpopulation.
     // Any dead cell with eactly three live neighbours becomes a live cell, as if by reproduction:
 
-    setTimeout(runSimulation, 100);
+    setTimeout(runSimulation, 1000);
     setCounter(counter => (counter += 1));
   }, []); //[] <--- this will make sure that this function is only created once
 
@@ -135,7 +136,7 @@ function App() {
           // iterate to create rows and colums
           for (let i = 0; i < numRows; i++) {
             rows.push(
-              Array.from(Array(numCols), () => (Math.random() > 0.1 ? 1 : 0))
+              Array.from(Array(numCols), () => (Math.random() > 0.5 ? 1 : 0))
             );
           }
 
@@ -143,21 +144,6 @@ function App() {
         }}
       >
         random
-      </button>
-      <div>{speed}</div>
-      <button
-        onClick={() => {
-          setSpeed(speed + 10);
-        }}
-      >
-        speed
-      </button>
-      <button
-        onClick={() => {
-          setCounter(counter + 1);
-        }}
-      >
-        Counter{counter}
       </button>
       <button
         onClick={() => {
@@ -167,7 +153,21 @@ function App() {
       >
         Clear
       </button>
-
+      <button
+        onClick={() => {
+          setCounter(counter + 1);
+        }}
+      >
+        Counter{counter}
+      </button>
+      <div>{speed}</div>
+      <button
+        onClick={() => {
+          setSpeed(speed + 10);
+        }}
+      >
+        speed
+      </button>
       <div
         style={{
           // this displays the grid
